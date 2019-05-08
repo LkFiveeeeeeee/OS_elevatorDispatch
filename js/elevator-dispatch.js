@@ -165,6 +165,9 @@ function selectElevator(floorIndex,isUp) {
     let status = isUp?STATUS_UP:STATUS_DOWN;
     let n = -1;
     let minD = 100;
+    if(_operationArray.length != 0){
+        pushSequence(floorIndex,status);
+    }
     //first choice   a relaxed elevator is stopped at this floor
     for(let i = 0;i < _elevatorNum;i++){
         if(_running[i] == RUNNING_OFF ){
@@ -305,8 +308,22 @@ function processOperators(n) {
     if(_operationArray.length == 0){
         return;
     }
-    let operation = _operationArray.shift();
-    _elevatorArray[n]._SLayer = new Set(operation._Floor);
+    while(_choosing != -1){
+        console.log("elevator"+n+" wait for  -1!!");
+    }
+    _choosing = n;
+    let minD = 100;
+    let chooseIndex = -1;
+    for(let i = 0;i < _operationArray.length;i++){
+        let len = Math.abs(_operationArray[i]._Floor[0] - _elevatorArray[n]._CFloor);
+        if(len < minD){
+            minD = len;
+            chooseIndex = i;
+        }
+    }
+    let operation = _operationArray[chooseIndex];
+    _operationArray.splice(chooseIndex,1);
+    _choosing = -1;
     moveElevator(n,operation._Floor[0],operation._status==STATUS_UP);
 }
 

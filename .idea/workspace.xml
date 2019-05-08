@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="10305570-43a7-420d-85e0-be92e7729d86" name="Default Changelist" comment="" />
+    <list default="true" id="10305570-43a7-420d-85e0-be92e7729d86" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/elevator-dispatch.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/elevator-dispatch.js" afterDir="false" />
+    </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
     <ignored path="$PROJECT_DIR$/tmp/" />
@@ -40,8 +44,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/js/elevator-dispatch.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="310">
-              <caret line="290" column="16" selection-start-line="290" selection-start-column="16" selection-end-line="290" selection-end-column="16" />
+            <state relative-caret-position="186">
+              <caret line="313" column="13" selection-start-line="313" selection-start-column="4" selection-end-line="313" selection-end-column="13" />
               <folding>
                 <element signature="n#!!doc" expanded="true" />
               </folding>
@@ -97,14 +101,10 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>button</find>
-      <find>removeClass</find>
-      <find>pushSe</find>
       <find>processOper</find>
       <find>processOpera</find>
       <find>processOperators</find>
       <find>pushSequ</find>
-      <find>process</find>
       <find>processO</find>
       <find>_status</find>
       <find>pushSequence</find>
@@ -127,7 +127,14 @@
       <find>console</find>
       <find>moveE</find>
       <find>processSequence</find>
+      <find>process</find>
+      <find>select</find>
+      <find>abs</find>
+      <find>_choosing</find>
     </findStrings>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
@@ -147,6 +154,7 @@
     <option name="width" value="1750" />
     <option name="height" value="1015" />
   </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
     <navigator proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
@@ -177,6 +185,7 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../../../用户交互设计/Task2/用户交互设计lab2" />
     <property name="settings.editor.selected.configurable" value="MTConfigurable" />
@@ -247,12 +256,12 @@
       <workItem from="1557158423367" duration="2158000" />
       <workItem from="1557205773694" duration="2000" />
       <workItem from="1557234791672" duration="4550000" />
-      <workItem from="1557281133491" duration="1049000" />
+      <workItem from="1557281133491" duration="2999000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="54739000" />
+    <option name="totallyTimeSpent" value="56689000" />
   </component>
   <component name="TodoView" selected-index="2">
     <todo-panel id="selected-file">
@@ -267,19 +276,19 @@
     <frame x="130" y="30" width="1400" height="812" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49585062" visible="true" weight="0.13343109" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.41558442" visible="true" weight="0.13343109" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
-      <window_info id="Favorites" order="2" sideWeight="0.5041494" side_tool="true" visible="true" weight="0.13343109" />
+      <window_info id="Favorites" order="2" sideWeight="0.58441556" side_tool="true" weight="0.13343109" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.06527778" />
       <window_info anchor="bottom" id="Run" order="2" weight="0.32916668" />
-      <window_info active="true" anchor="bottom" id="Debug" order="3" visible="true" weight="0.26299694" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.80428135" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.32916668" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Version Control" order="8" />
-      <window_info anchor="bottom" id="Terminal" order="9" weight="0.32916668" />
+      <window_info anchor="bottom" id="Terminal" order="9" weight="0.45107034" />
       <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" weight="0.32882884" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -313,20 +322,21 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/js/elevator-dispatch.js</url>
-          <line>275</line>
+          <line>265</line>
           <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="6" />
+          <option name="timeStamp" value="8" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
     <watches-manager>
       <configuration name="JavascriptDebugType">
-        <watch expression="_operationArray[&quot;0&quot;]._Floor" />
         <watch expression="stopArray" language="JavaScript" />
         <watch expression="_elevatorArray[&quot;0&quot;]" />
         <watch expression="_operationArray" />
-        <watch expression="_operationArray" />
         <watch expression="_operationArray.__proto__" />
+        <watch expression="_elevatorArray" />
+        <watch expression="_operationArray" />
+        <watch expression="_elevatorArray" />
       </configuration>
     </watches-manager>
   </component>
@@ -399,8 +409,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/js/elevator-dispatch.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="310">
-          <caret line="290" column="16" selection-start-line="290" selection-start-column="16" selection-end-line="290" selection-end-column="16" />
+        <state relative-caret-position="186">
+          <caret line="313" column="13" selection-start-line="313" selection-start-column="4" selection-end-line="313" selection-end-column="13" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
           </folding>
