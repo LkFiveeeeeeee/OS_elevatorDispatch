@@ -1,0 +1,175 @@
+﻿html, body {
+    margin: 0;
+    padding: 0;
+    font-size: 16px;
+}
+body {
+    background-color: #eeefff;
+}
+
+/*内部视图*/
+.insideView {
+    border-radius: 0px;
+    float: left;
+    box-sizing: border-box;
+    width: 15%;
+    height: 800px;
+/*    padding: 5px;*/
+    background-color: #000;
+    margin: 10px 20px 10px 10px;
+}
+.elevator {
+    border-radius: 15px;
+    position:relative;
+    background-color: #eeeeee;
+    width: 100%;
+    height:100%;
+}
+p {
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+.elevator>p {
+    font-size: 2rem;
+    line-height: 460px;
+    font-family: Segoe, Roboto, Helvetica, "Microsoft YaHei", Arial, sans-serif;
+    color: #424242;
+    z-index: 199;
+    /*color: #22234B;*/
+}
+.door {
+    position: absolute;
+    bottom: 10px;
+    width: 15%;
+    height: 4.9375%;
+    background-color: #a7a7a7;
+    transition: all 1s ease-in-out;
+
+}
+
+.supportbar{
+    margin-left: 65px;
+    width: 2%;
+    height: 791px;
+    background: #000000;
+    z-index: 0;
+}
+/* Close:150 Open:0 */
+.leftdoor {
+    left: 15%;
+    border-right: 1px solid #5f5f5f;
+    z-index: 99;
+}
+/* Close:350 Open:500 */
+.rightdoor {
+    left: 30%;
+    border-left: 1px solid #262626;
+    z-index: 99;
+}
+.panel {
+    position: absolute;
+    top: 0;
+    width: 15%;
+    height: 100%;
+    background-color: #969696;
+}
+.leftpanel {
+    box-sizing: border-box;
+    left: 0;
+    width:
+    padding: 20px;
+    box-shadow: 2px 0 2px 0 #333;
+    z-index: 199;
+}
+.floorNumber {
+    border: 0.1px solid #262626;
+    width: 100%;
+    height: 39.3px;
+    line-height: 39.3px;
+    font-size: 0.5em;
+    margin-left: 0px;
+    text-align:center;
+    font-family: Segoe, Roboto, Helvetica, "Microsoft YaHei", Arial, sans-serif;
+
+}
+.rightpanel {
+    box-sizing: border-box;
+    width:55%;
+    left: 45%;
+    box-shadow: -2px 0 2px 0 #333;
+    z-index: 199;
+}
+.screen {
+    width: 80%;
+    height: 14%;
+    margin:10% 10% 10% 10%;
+    background-color: #252525;
+}
+.updownlight {
+    padding: 5px 40% 5px 40%;
+    color:  #3a3a3a
+}
+.updownlight .turnon{
+    color:white
+}
+.floorOnScreen {
+    color: #ececec;
+    font-size: 3em;
+    font-family: Segoe, Roboto, Helvetica, "Microsoft YaHei", Arial, sans-serif;
+    /*    line-height: 155px;*/
+}
+.button {
+    float: left;
+    box-sizing: border-box;
+    width: 30px;
+    height: 30px;
+    border: 1px solid #262626;
+    margin: 10% 0 0 17%;
+    color: #262626;
+    background: #bbbbbb;
+    font-family: Segoe, Roboto, Helvetica, "Microsoft YaHei", Arial, sans-serif;
+    text-align: center;
+    line-height: 30px;
+}
+.button:hover {
+    cursor: pointer;
+    background-color: #f9f9f9;
+}
+.button.pressed {
+    background-color: #FFF;
+}
+
+/*外部视图*/
+#outsideView {
+    border: 2px solid #100100;
+    color: #000000;
+    float: left;
+    box-sizing: border-box;
+    width: 10%;
+    height: 800px;
+    padding: 5px;
+    background-color: #969696;
+    margin: 10px 40px 10px 10px;
+}
+
+#outsideUpDownButtons {
+    margin-left: 7px;
+    width: 100%;
+    font-family: Segoe, Roboto, Helvetica, "Microsoft YaHei", Arial, sans-serif;
+}
+
+#outsideUpDownButtons td {
+    font-size: 0.8rem;
+    line-height: 29px;
+}
+.floor .button {
+    color: #585858;
+    width: 29px;
+    height: 29px;
+    line-height: 29px;
+    margin: 5.5% 5% 5% 5%;
+}
+.floor .button.on{
+    background-color:white;
+}
