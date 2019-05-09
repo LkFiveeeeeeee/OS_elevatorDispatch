@@ -79,18 +79,21 @@ function openDoor(n,sign=false) {
     $("#E" + n + " .leftdoor").css("left","0%");
     $("#E" + n + " .rightdoor").css("left","45%");
     if(sign){
-        if(_timer[n]){
+        if(_timer[n] != -1){
             console.log("clear timer");
-            clearInterval(_timer[n]);
+            clearTimer(n);
         }
         setTimeout(function () {
             _elevatorArray[n]._Interupt = false;
             closeDoor(n);
             setTimeout(function () {
                 if(!_elevatorArray[n]._Interupt){
-                    _elevatorArray[n]._CanOpen = true;
-                    initTimer(n);
-                    console.log("init Timer!!!");
+                    _elevatorArray[n]._CanOpen = false;
+                    if(_timer[n] == -1){
+                        _timer[n] = initTimer(n);
+                        console.log("init Timer!!!");
+                    }
+
                 }
             },2000)
         },2000)
@@ -101,30 +104,36 @@ function closeDoor(n,sign=false) {
     $("#E" + n + " .leftdoor").css("left","15%");
     $("#E" + n + " .rightdoor").css("left","30%");
     if(sign){
-        if(_timer[n]){
+        if(_timer[n] != -1){
             console.log("clear timer");
-            clearInterval(_timer[n]);
+            clearTimer(n)
+   //         clearInterval(_timer[n]);
 
         }
         setTimeout(function () {
             if(!_elevatorArray[n]._Interupt){
-                _elevatorArray[n]._CanOpen = true;
-                initTimer(n);
-                console.log("init Timer!!!");
+                _elevatorArray[n]._CanOpen = false;
+                if(_timer[n] == -1){
+                    _timer[n] = initTimer(n);
+                    console.log("init Timer!!!");
+                }
+
             }
         },2000)
     }
 }
 
-$(".open").click(function () {
+$(".open").off("click").on('click',(function () {
    let id = $(this)[0].id;
+   console.log("click"+id);
    openDoor(parseInt(id.substr(5)),true);
-});
+}));
 
-$(".close").click(function () {
+$(".close").off('click').on('click',(function () {
     let id = $(this)[0].id;
+    console.log("click"+id);
     closeDoor(parseInt(id.substr(6)),true);
-});
+}));
 
 $(".call").click(function(){
     alert("正在呼救!!!");
@@ -282,7 +291,7 @@ function initTimer(n) {
 }
 
 function clearTimer(n) {
-    clearTimer(_timer[n]);
+    clearInterval(_timer[n]);
     _timer[n] = -1;
 }
 
@@ -441,8 +450,10 @@ function arriveAnimate(n,CFloor,t_status,sign) {
                 }
                 if(!_elevatorArray[n]._Interupt){
                     _elevatorArray[n]._CanOpen = false;
-                    _timer[n] = initTimer(n);
-                    console.log("init Timer!!!");
+                    if(_timer[n] == -1){
+                        _timer[n] = initTimer(n);
+                        console.log("init Timer!!!");
+                    }
                 }
             },2000);
         },2000);
@@ -450,10 +461,8 @@ function arriveAnimate(n,CFloor,t_status,sign) {
 }
 
 function run(n) {
-    let test = setInterval(function () {
 
-    },1000);
-    clearInterval(test);
+
 
     if(_running[n] == RUNNING_ON){
 
@@ -464,7 +473,7 @@ function run(n) {
         if((CFloor == TFloor) || ((c_status == t_status) &&_elevatorArray[n]._SLayer.has(CFloor))){
             if(_timer[n]){
                 console.log("clear Timer");
-                clearInterval(_timer[n]);
+                clearTimer(n);
             }
             if(CFloor == TFloor){
                 if(c_status == t_status){
