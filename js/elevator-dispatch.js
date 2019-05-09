@@ -21,7 +21,7 @@ let _elevatorNum = 5;  // Number of elevator
 let _dispatchArray = []; // Queue for store instructions when all the elevator are occupied
 let _timer = new Array(_elevatorNum); // timer for every elevator. The solution is one-versus-one.
 let _running = new Array(_elevatorNum);
-let _choosing = -1;
+//let _choosing = -1;
 
 function Elevator(){
     this._Cstatus = STATUS_FREE; //  It stands out the elevator's current direction
@@ -32,12 +32,12 @@ function Elevator(){
     this._CFloor = 1;
     this._TFloor = 1;
     this._SLayer = new Set();
-    this._CanOpen = true;   // control if can open the door
+    this._CanOpen = false;   // control if can open the door
+    this._Interupt = false;
 }
 
 function Operation(floor=0,status=STATUS_FREE){
-    this._Floor = [];
-    this._Floor.push(floor);
+    this._Floor = floor;
     this._status = status;
 }
 
@@ -54,6 +54,10 @@ function init() {
         _timer[i] = initTimer(i);
         _running[i] = RUNNING_OFF;
     }
+    // mock dispatcher thread
+    setInterval(function () {
+        processSequence()
+    },1000);
 }
 $(document).ready(init);
 
@@ -69,22 +73,47 @@ function openDoor(n,sign=false) {
     if(!_elevatorArray[n]._CanOpen){
         return ;
     }
+    if(sign){
+        _elevatorArray[n]._Interupt = true;
+    }
     $("#E" + n + " .leftdoor").css("left","0%");
     $("#E" + n + " .rightdoor").css("left","45%");
     if(sign){
-        clearInterval(_timer[n]);
+        if(_timer[n]){
+            console.log("clear timer");
+            clearInterval(_timer[n]);
+        }
         setTimeout(function () {
+            _elevatorArray[n]._Interupt = false;
             closeDoor(n);
             setTimeout(function () {
-                initTimer(n);
-            },1000)
-        },3000)
+                if(!_elevatorArray[n]._Interupt){
+                    _elevatorArray[n]._CanOpen = true;
+                    initTimer(n);
+                    console.log("init Timer!!!");
+                }
+            },2000)
+        },2000)
     }
 }
 
 function closeDoor(n,sign=false) {
     $("#E" + n + " .leftdoor").css("left","15%");
     $("#E" + n + " .rightdoor").css("left","30%");
+    if(sign){
+        if(_timer[n]){
+            console.log("clear timer");
+            clearInterval(_timer[n]);
+
+        }
+        setTimeout(function () {
+            if(!_elevatorArray[n]._Interupt){
+                _elevatorArray[n]._CanOpen = true;
+                initTimer(n);
+                console.log("init Timer!!!");
+            }
+        },2000)
+    }
 }
 
 $(".open").click(function () {
@@ -138,7 +167,8 @@ $(".dial .button").click(function () {
 });
 
 //click event on outside panel
-$(".up.button").click(function () {
+$(".up").off().on('click',function (e) {
+    e.stopPropagation();
     let floorIndex = $(this).parent()[0].id.substr(5);
     if($(this).hasClass('on')){
         // if it has already dials the button;
@@ -147,10 +177,13 @@ $(".up.button").click(function () {
     floorIndex = parseInt(floorIndex);
     $(this).addClass('on');
     selectElevator(floorIndex,true);
+    return false;
 });
 
 //click event on outside panel
-$(".down.button").click(function () {
+
+$(".down").off().on("click",function (e) {
+    e.stopPropagation();
     let floorIndex = $(this).parent()[0].id.substr(5);
     if($(this).hasClass('on')){
         return;
@@ -158,18 +191,19 @@ $(".down.button").click(function () {
     floorIndex = parseInt(floorIndex);
     $(this).addClass('on');
     selectElevator(floorIndex,false);
+    return false;
 });
 
 
 function selectElevator(floorIndex,isUp) {
     let status = isUp?STATUS_UP:STATUS_DOWN;
     let n = -1;
-    let minD = 100;
+   // let minD = 100;
     if(_operationArray.length != 0){
         pushSequence(floorIndex,status);
     }
     //first choice   a relaxed elevator is stopped at this floor
-    for(let i = 0;i < _elevatorNum;i++){
+ /*   for(let i = 0;i < _elevatorNum;i++){
         if(_running[i] == RUNNING_OFF ){
             if(_elevatorArray[i]._CFloor == floorIndex){
                  moveElevator(i,floorIndex,isUp);
@@ -196,7 +230,7 @@ function selectElevator(floorIndex,isUp) {
                 }
             }
         }
-    }
+    }*/
     if(n != -1){
         if(_running[n] == RUNNING_ON){
             if(status == STATUS_UP){
@@ -234,12 +268,31 @@ function addLayerToDown(n,floorIndex,sign=false){
     }
 }
 
+function checkExist(floorIndex,status) {
+    for(let i = 0;i < _operationArray.length;i++){
+        if(floorIndex == _operationArray[i]._Floor && status == _operationArray[i]._status){
+            return i;
+        }
+    }
+    return -1;
+}
+
 function initTimer(n) {
     return setInterval("run("+n+")",1000)
 }
 
+function clearTimer(n) {
+    clearTimer(_timer[n]);
+    _timer[n] = -1;
+}
+
 function pushSequence(floorIndex,status) {
+    let result = checkExist(floorIndex,status);
     let process = false;
+    if(result != -1){
+        process = true;
+    }
+
 /*    for(let i = 0;i < _operationArray.length;i++){
         if(status == _operationArray[i]._status ){
             if(status == STATUS_DOWN){
@@ -257,75 +310,77 @@ function pushSequence(floorIndex,status) {
             }
         }
     }*/
+
     if(!process){
         _operationArray.push(new Operation(floorIndex,status));
+        console.log("push"+floorIndex+"   status"+status);
     }
 }
 
-function processSequence(n) {
-    if(_choosing == -1){
-        _choosing = n;
-    }else{
+function processSequence() {
+    let tempArray = _operationArray;
+    let length = tempArray.length;
+    if(length <= 0 ){
         return;
     }
-    console.log("index"+n+"come in !!!!");
-    if(_elevatorArray[n]._Cstatus != _elevatorArray[n]._Tstatus){
-        _choosing = -1;
-        console.log("index"+n+"come out !!!!");
-        return;
-    }
-    let length = _operationArray.length;
-    for(let i = 0;i < length;){
-        if(_operationArray[i]._status == _elevatorArray[n]._Tstatus){
-            let floor = _operationArray[i]._Floor[0];
-            if(_operationArray[i]._status == STATUS_UP && floor > _elevatorArray[n]._CFloor
-                && floor - _elevatorArray[n]._CFloor < INTERVAL){
-                addLayerToUp(n,floor);
-                console.log("index"+n+"add"+floor+"!!!!");
-                _operationArray.splice(i,1);
-                length--;
-                continue;
+    console.log(tempArray.toString());
+    // if elevator is stopping
+    for(let i = 0; i < _elevatorNum;i++){
+        if(length <= 0){
+            return;
+        }
+        if(_elevatorArray[i]._Cstatus != _elevatorArray[i]._Tstatus || _elevatorArray[i]._CanOpen){
+            continue;
+        }
+        if(_elevatorArray[i]._Tstatus == STATUS_FREE){
+            let minD = 100;
+            let chooseIndex = -1;
+            console.log(length);
+            for(let j = 0;j <length;j++){
+                let len = computeDistance(tempArray[j]._Floor,_elevatorArray[i]._CFloor);
+                console.log(tempArray[j]._status);
+                if(len < minD){
+                    minD = len;
+                    chooseIndex = j;
+                }
             }
-            if(_operationArray[i]._status == STATUS_DOWN && floor < _elevatorArray[n]._CFloor
-                && _elevatorArray[n]._CFloor - floor < INTERVAL){
-                addLayerToDown(n,floor);
-                console.log("index"+n+"add"+floor+"!!!!");
-                _operationArray.splice(i,1);
-                length--;
-                continue;
+            moveElevator(i,tempArray[chooseIndex]._Floor,tempArray[chooseIndex]._status == STATUS_UP);
+            console.log("index"+i +"pick" + " "+tempArray[chooseIndex]._Floor + " "+ tempArray[chooseIndex]._status);
+            deleteOperationArray(checkExist(tempArray[chooseIndex]._Floor,tempArray[chooseIndex]._status));
+        //    tempArray.splice(chooseIndex,1);
+            length--;
+            if(length <= 0){
+                return;
+            }
+        }else{
+            for(let j = 0;j < length;){
+                if((tempArray[j]._status == _elevatorArray[i]._Tstatus)){
+                    let floor = tempArray[j]._Floor;
+                    if(tempArray[j]._status == STATUS_UP && floor > _elevatorArray[i]._CFloor
+                        && computeDistance(floor,_elevatorArray[i]._CFloor) < INTERVAL){
+                        addLayerToUp(i,floor);
+                        console.log("index"+i +"pick" + " "+floor+ " "+ tempArray[j]._status);
+                        deleteOperationArray(checkExist(floor,tempArray[j]._status));
+            //            tempArray.splice(j,1);
+                        length--;
+                        continue;
+                    }
+                    if(tempArray[j]._status == STATUS_DOWN && floor < _elevatorArray[i]._CFloor
+                        && computeDistance(floor,_elevatorArray[i]._CFloor)< INTERVAL){
+                        addLayerToDown(i,floor);
+                        console.log("index"+i +"pick" + " "+floor+ " "+ tempArray[j]._status);
+                        deleteOperationArray(checkExist(floor,tempArray[j]._status));
+            //            tempArray.splice(j,1);
+                        length--;
+                        continue;
+                    }
+                }
+                j++;
             }
         }
-        i++;
     }
-    console.log("index"+n+"come out !!!!");
-    _choosing = -1;
 }
 
-function processOperators(n) {
-    if(_running[n] != RUNNING_OFF){
-        return;
-    }
-    if(_operationArray.length == 0){
-        return;
-    }
-    while(_choosing != -1){
-        console.log("elevator"+n+" wait for  -1!!");
-    }
-    _choosing = n;
-    let minD = 100;
-    let chooseIndex = -1;
-    for(let i = 0;i < _operationArray.length;i++){
-        let len = Math.abs(_operationArray[i]._Floor[0] - _elevatorArray[n]._CFloor);
-        if(len < minD){
-            minD = len;
-            chooseIndex = i;
-        }
-    }
-    let operation = _operationArray[chooseIndex];
-    _operationArray.splice(chooseIndex,1);
-    _choosing = -1;
-    moveElevator(n,operation._Floor[0],operation._status==STATUS_UP);
-}
 
 function moveElevator(n,floorIndex,isUp){
     isUp = isUp?STATUS_UP:STATUS_DOWN; // choose status
@@ -350,67 +405,65 @@ function arriveOperation(n,CFloor,sign=false) {
     let t_status = _elevatorArray[n]._Tstatus;
     _elevatorArray[n]._SLayer.delete(CFloor);
     console.log("index =" + n + "delete" + CFloor);
-    if(!sign){
-        // if the sequence is empty, then the elevator will still in CFloor
-        if(_elevatorArray[n]._SLayer.size == 0){
-            _elevatorArray[n]._Cstatus = _elevatorArray[n]._Tstatus = STATUS_FREE;
-            _running[n] = RUNNING_OFF;
-            console.log("no stop floor so end..");
-            setTimeout(function () {
-                processOperators(n);
-                removeLight(n);
-            },3000);
+    arriveAnimate(n,CFloor,t_status,sign);
+}
 
-        }
-    }else {
-        // turn direction
-        setTimeout(function () {
-            removeLight(n);
-            processOperators(n);
-        },3000);
-        t_status = _elevatorArray[n]._Tstatus;
-        _elevatorArray[n]._Cstatus = t_status;
-        let stopArray = Array.from(_elevatorArray[n]._SLayer);
-        if(stopArray.length == 0){
-            _elevatorArray[n]._Cstatus = _elevatorArray[n]._Tstatus = STATUS_FREE;
-            _running[n] = RUNNING_OFF;
-            console.log("turn but no stop floor so end..");
-        }else {
+function arriveAnimate(n,CFloor,t_status,sign) {
+    setTimeout(function () {
+        _elevatorArray[n]._CanOpen = true;
+        openDoor(n);
+        if(sign){
+            t_status = _elevatorArray[n]._Tstatus;
+            _elevatorArray[n]._Cstatus = t_status;
+            // turn direction
+            turnLight(n,_elevatorArray[n]._Tstatus);
+            let stopArray = Array.from(_elevatorArray[n]._SLayer);
             if(t_status == STATUS_UP){
                 stopArray.sort(sortAesc);
             }else if(t_status == STATUS_DOWN){
                 stopArray.sort(sortDesc);
             }
-            _elevatorArray[n]._TFloor = stopArray[stopArray.length-1];
-            console.log("turn index"+n+" TFloor to "+ stopArray[stopArray.length-1])
+            if(stopArray.length != 0){
+                _elevatorArray[n]._TFloor = stopArray[stopArray.length-1];
+                console.log("turn index"+n+" TFloor to "+ stopArray[stopArray.length-1])
+            }
         }
-    }
-    arriveAnimate(n,CFloor,t_status);
-}
-function arriveAnimate(n,CFloor,t_status) {
-    setTimeout(function () {
-        _elevatorArray[n]._CanOpen = true;
-        openDoor(n);
         setTimeout(function () {
             closeDoor(n);
             removeOutsideLight(n,CFloor,t_status);
             setTimeout(function () {
-                _timer[n] = initTimer(n);
+                // if the sequence is empty, then the elevator will still in CFloor
+                if(_elevatorArray[n]._SLayer.size == 0){
+                    _elevatorArray[n]._Cstatus = _elevatorArray[n]._Tstatus = STATUS_FREE;
+                    _running[n] = RUNNING_OFF;
+                    console.log("no stop floor so end..");
+                    removeLight(n);
+                }
+                if(!_elevatorArray[n]._Interupt){
+                    _elevatorArray[n]._CanOpen = false;
+                    _timer[n] = initTimer(n);
+                    console.log("init Timer!!!");
+                }
             },2000);
         },2000);
     },2000);
 }
 
 function run(n) {
+    let test = setInterval(function () {
+
+    },1000);
+    clearInterval(test);
+
     if(_running[n] == RUNNING_ON){
-        _elevatorArray[n]._CanOpen = false;
-        processSequence(n);
+
         let c_status = _elevatorArray[n]._Cstatus;
         let t_status = _elevatorArray[n]._Tstatus;
         let TFloor = _elevatorArray[n]._TFloor;
         let CFloor = _elevatorArray[n]._CFloor;
         if((CFloor == TFloor) || ((c_status == t_status) &&_elevatorArray[n]._SLayer.has(CFloor))){
             if(_timer[n]){
+                console.log("clear Timer");
                 clearInterval(_timer[n]);
             }
             if(CFloor == TFloor){
@@ -468,5 +521,19 @@ function removeOutsideLight(n,floorIndex,status){
         $("#floor"+floorIndex+" td.down.button").removeClass("on");
     }
     $("#dialpad"+n+" .button.dial"+floorIndex).removeClass("pressed");
+}
+
+function deleteOperationArray(index) {
+    _operationArray.splice(index,1);
+}
+
+function turnLight(n,status) {
+    if(status == STATUS_UP){
+        $("#downlight"+n).removeClass("turnon");
+        $("#uplight"+n).addClass("turnon");
+    }else{
+        $("#uplight"+n).removeClass("turnon");
+        $("#downlight"+n).addClass("turnon");
+    }
 }
 

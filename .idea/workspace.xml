@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="10305570-43a7-420d-85e0-be92e7729d86" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/js/elevator-dispatch.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/elevator-dispatch.js" afterDir="false" />
     </list>
@@ -23,7 +22,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/js/jquery-3.3.1.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state>
+            <state relative-caret-position="111259">
               <caret line="3601" column="12" selection-start-line="3601" selection-start-column="12" selection-end-line="3601" selection-end-column="12" />
               <folding>
                 <element signature="n#!!doc" expanded="true" />
@@ -41,11 +40,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/js/elevator-dispatch.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="186">
-              <caret line="313" column="13" selection-start-line="313" selection-start-column="4" selection-end-line="313" selection-end-column="13" />
+            <state relative-caret-position="-713">
+              <caret line="53" column="23" lean-forward="true" selection-start-line="53" selection-start-column="23" selection-end-line="53" selection-end-column="23" />
               <folding>
                 <element signature="n#!!doc" expanded="true" />
               </folding>
@@ -54,8 +53,8 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="mock://vm:2331">
-          <provider selected="true" editor-type-id="vmFileEditor" />
+        <entry file="http://localhost:63342/ElevatorScheduling-master/js/elevator-dispatch.js">
+          <provider selected="true" editor-type-id="httpFileEditor" />
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
@@ -66,17 +65,20 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/js/elevator.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="13392">
-              <caret line="432" column="22" selection-start-line="432" selection-start-column="17" selection-end-line="432" selection-end-column="22" />
+            <state relative-caret-position="9021">
+              <caret line="291" column="9" selection-start-line="291" selection-start-column="9" selection-end-line="291" selection-end-column="9" />
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/elevator.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="93">
-              <caret line="3" column="26" selection-start-line="3" selection-start-column="26" selection-end-line="3" selection-end-column="26" />
+            <state relative-caret-position="436">
+              <caret line="19" column="17" selection-start-line="19" selection-start-column="12" selection-end-line="19" selection-end-column="17" />
+              <folding>
+                <element signature="n#style#0;n#td#1;n#tr#0;n#table#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -101,36 +103,36 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>processOper</find>
-      <find>processOpera</find>
-      <find>processOperators</find>
-      <find>pushSequ</find>
-      <find>processO</find>
-      <find>_status</find>
-      <find>pushSequence</find>
-      <find>selectElevator</find>
-      <find>openDoor</find>
-      <find>clearI</find>
-      <find>rightp</find>
-      <find>border</find>
-      <find>outsi</find>
-      <find>floor</find>
-      <find>left</find>
-      <find>judge</find>
-      <find>addLayerToUp</find>
-      <find>moveElevator</find>
-      <find>push</find>
-      <find>addL</find>
-      <find>dialpad</find>
-      <find>index</find>
-      <find>arriveAni</find>
-      <find>console</find>
-      <find>moveE</find>
       <find>processSequence</find>
       <find>process</find>
-      <find>select</find>
       <find>abs</find>
+      <find>setInter</find>
       <find>_choosing</find>
+      <find>INTERVAL</find>
+      <find>computeDis</find>
+      <find>select</find>
+      <find>arriveOperation</find>
+      <find>_running</find>
+      <find>Operation</find>
+      <find>_operationArray</find>
+      <find>_Floor</find>
+      <find>operation</find>
+      <find>_operationArray[i]</find>
+      <find>up button</find>
+      <find>dispatch</find>
+      <find>.</find>
+      <find>.button</find>
+      <find>push</find>
+      <find>turnLi</find>
+      <find>openDoo</find>
+      <find>inittimer</find>
+      <find>arriveAnimate</find>
+      <find>clearInter</find>
+      <find>clearInterva</find>
+      <find>openDoor</find>
+      <find>initTimer</find>
+      <find>_time</find>
+      <find>_timer</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -141,18 +143,18 @@
       <list>
         <option value="$PROJECT_DIR$/README.md" />
         <option value="$PROJECT_DIR$/js/control.js" />
-        <option value="$PROJECT_DIR$/elevator.html" />
         <option value="$PROJECT_DIR$/js/elevator.js" />
         <option value="$PROJECT_DIR$/css/elevator.css" />
+        <option value="$PROJECT_DIR$/elevator.html" />
         <option value="$PROJECT_DIR$/js/elevator-dispatch.js" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds">
-    <option name="x" value="162" />
-    <option name="y" value="37" />
+  <component name="ProjectFrameBounds" extendedState="6">
+    <option name="x" value="-14" />
+    <option name="y" value="35" />
     <option name="width" value="1750" />
-    <option name="height" value="1015" />
+    <option name="height" value="965" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -256,12 +258,14 @@
       <workItem from="1557158423367" duration="2158000" />
       <workItem from="1557205773694" duration="2000" />
       <workItem from="1557234791672" duration="4550000" />
-      <workItem from="1557281133491" duration="2999000" />
+      <workItem from="1557281133491" duration="8315000" />
+      <workItem from="1557301094098" duration="10331000" />
+      <workItem from="1557393884237" duration="1138000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="56689000" />
+    <option name="totallyTimeSpent" value="73474000" />
   </component>
   <component name="TodoView" selected-index="2">
     <todo-panel id="selected-file">
@@ -273,23 +277,23 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="130" y="30" width="1400" height="812" extended-state="0" />
+    <frame x="-7" y="-7" width="1550" height="878" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.41558442" visible="true" weight="0.13343109" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.41558442" visible="true" weight="0.12021136" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" sideWeight="0.58441556" side_tool="true" weight="0.13343109" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.06527778" />
       <window_info anchor="bottom" id="Run" order="2" weight="0.32916668" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.80428135" />
+      <window_info anchor="bottom" id="Debug" order="3" visible="true" weight="0.22083333" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
-      <window_info anchor="bottom" id="TODO" order="6" weight="0.32916668" />
+      <window_info anchor="bottom" id="TODO" order="6" sideWeight="0.49867898" weight="0.32916668" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Version Control" order="8" />
-      <window_info anchor="bottom" id="Terminal" order="9" weight="0.45107034" />
-      <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" weight="0.32882884" />
+      <window_info anchor="bottom" id="Version Control" order="8" sideWeight="0.49867898" weight="0.32916668" />
+      <window_info anchor="bottom" id="Terminal" order="9" weight="0.69722223" />
+      <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.501321" side_tool="true" weight="0.32916668" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -317,14 +321,54 @@
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
   </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="RECENTLY_FILTERED_USER_GROUPS">
+                <collection />
+              </option>
+              <option name="RECENTLY_FILTERED_BRANCH_GROUPS">
+                <collection />
+              </option>
+              <option name="COLUMN_ORDER">
+                <list>
+                  <option value="0" />
+                  <option value="1" />
+                  <option value="2" />
+                  <option value="3" />
+                </list>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="RECENT_FILTERS">
+      <map>
+        <entry key="Branch">
+          <value>
+            <list />
+          </value>
+        </entry>
+        <entry key="User">
+          <value>
+            <list />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/js/elevator-dispatch.js</url>
-          <line>265</line>
+          <line>444</line>
           <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="8" />
+          <option name="timeStamp" value="1" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
@@ -336,7 +380,7 @@
         <watch expression="_operationArray.__proto__" />
         <watch expression="_elevatorArray" />
         <watch expression="_operationArray" />
-        <watch expression="_elevatorArray" />
+        <watch expression="_timer" />
       </configuration>
     </watches-manager>
   </component>
@@ -365,7 +409,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/js/jquery-3.3.1.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state>
+        <state relative-caret-position="111259">
           <caret line="3601" column="12" selection-start-line="3601" selection-start-column="12" selection-end-line="3601" selection-end-column="12" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
@@ -380,20 +424,16 @@
         </state>
       </provider>
     </entry>
+    <entry file="http://localhost:63342/ElevatorScheduling-master/js/elevator-dispatch.js">
+      <provider selected="true" editor-type-id="httpFileEditor" />
+    </entry>
     <entry file="file://$PROJECT_DIR$/.gitignore">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/js/elevator.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="13392">
-          <caret line="432" column="22" selection-start-line="432" selection-start-column="17" selection-end-line="432" selection-end-column="22" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/elevator.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="93">
-          <caret line="3" column="26" selection-start-line="3" selection-start-column="26" selection-end-line="3" selection-end-column="26" />
+        <state relative-caret-position="9021">
+          <caret line="291" column="9" selection-start-line="291" selection-start-column="9" selection-end-line="291" selection-end-column="9" />
         </state>
       </provider>
     </entry>
@@ -404,15 +444,22 @@
         </state>
       </provider>
     </entry>
-    <entry file="http://localhost:63342/ElevatorScheduling-master/js/elevator-dispatch.js">
-      <provider selected="true" editor-type-id="httpFileEditor" />
-    </entry>
     <entry file="file://$PROJECT_DIR$/js/elevator-dispatch.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="186">
-          <caret line="313" column="13" selection-start-line="313" selection-start-column="4" selection-end-line="313" selection-end-column="13" />
+        <state relative-caret-position="-713">
+          <caret line="53" column="23" lean-forward="true" selection-start-line="53" selection-start-column="23" selection-end-line="53" selection-end-column="23" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/elevator.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="436">
+          <caret line="19" column="17" selection-start-line="19" selection-start-column="12" selection-end-line="19" selection-end-column="17" />
+          <folding>
+            <element signature="n#style#0;n#td#1;n#tr#0;n#table#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
           </folding>
         </state>
       </provider>
