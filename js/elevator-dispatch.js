@@ -15,13 +15,14 @@ const RUNNING_ON = 77;
 const RUNNING_OFF = 33;
 
 
-let _minFloor = 0; // The lowest floor
+let _minFloor = 1; // The lowest floor
 let _maxFloor = 20; // The max floor
 let _elevatorNum = 5;  // Number of elevator
-let _dispatchArray = []; // Queue for store instructions when all the elevator are occupied
 let _timer = new Array(_elevatorNum); // timer for every elevator. The solution is one-versus-one.
 let _running = new Array(_elevatorNum);
-//let _choosing = -1;
+let _elevatorArray = new Array(_elevatorNum);
+let _operationArray = [];
+
 
 function Elevator(){
     this._Cstatus = STATUS_FREE; //  It stands out the elevator's current direction
@@ -41,8 +42,6 @@ function Operation(floor=0,status=STATUS_FREE){
     this._status = status;
 }
 
-let _elevatorArray = new Array(_elevatorNum);
-let _operationArray = [];
 
 /*
     Initialization
@@ -61,7 +60,7 @@ function init() {
 }
 $(document).ready(init);
 
-function sortDesc(x,y){
+    function sortDesc(x,y){
     return y-x;
 }
 
@@ -206,53 +205,7 @@ $(".down").off().on("click",function (e) {
 
 function selectElevator(floorIndex,isUp) {
     let status = isUp?STATUS_UP:STATUS_DOWN;
-    let n = -1;
-   // let minD = 100;
-    if(_operationArray.length != 0){
-        pushSequence(floorIndex,status);
-    }
-    //first choice   a relaxed elevator is stopped at this floor
- /*   for(let i = 0;i < _elevatorNum;i++){
-        if(_running[i] == RUNNING_OFF ){
-            if(_elevatorArray[i]._CFloor == floorIndex){
-                 moveElevator(i,floorIndex,isUp);
-                 return;
-            }else{
-                let distance = computeDistance(floorIndex,_elevatorArray[i]._CFloor);
-                if(distance < minD){
-                    minD = distance;
-                    n = i;
-                }
-            }
-        }else if(status == _elevatorArray[i]._Tstatus && _elevatorArray[i]._Tstatus == _elevatorArray[i]._Cstatus){
-            if(status == STATUS_DOWN && floorIndex < _elevatorArray[i]._CFloor){
-                let distance = computeDistance(floorIndex,_elevatorArray[i]._CFloor);
-                if(distance < minD){
-                    minD = distance;
-                    n = i;
-                }
-            }else if(status == STATUS_UP && floorIndex > _elevatorArray[i]._CFloor) {
-                let distance = computeDistance(floorIndex, _elevatorArray[i]._CFloor);
-                if (distance < minD) {
-                    minD = distance;
-                    n = i;
-                }
-            }
-        }
-    }*/
-    if(n != -1){
-        if(_running[n] == RUNNING_ON){
-            if(status == STATUS_UP){
-                addLayerToUp(n,floorIndex);
-            }else{
-                addLayerToDown(n,floorIndex);
-            }
-        }else{
-            moveElevator(n,floorIndex,isUp) // To let free elevator to arrive to user's position
-        }
-    }else{
-        pushSequence(floorIndex,status);
-    }
+    pushSequence(floorIndex,status);
 }
 
 function computeDistance(floor,CFloor){
@@ -302,24 +255,6 @@ function pushSequence(floorIndex,status) {
         process = true;
     }
 
-/*    for(let i = 0;i < _operationArray.length;i++){
-        if(status == _operationArray[i]._status ){
-            if(status == STATUS_DOWN){
-                if(floorIndex < _operationArray[i]._Floor[0] && computeDistance(floorIndex,_operationArray[i]._Floor[0]) <= INTERVAL){
-                    _operationArray[i]._Floor.push(floorIndex);
-                    process = true;
-                    break;
-                }
-            }else if(status == STATUS_UP){
-                if(floorIndex > _operationArray[i]._Floor[0] && computeDistance(floorIndex,_operationArray[i]._Floor[0]) <= INTERVAL){
-                    _operationArray[i]._Floor.push(floorIndex);
-                    process = true;
-                    break;
-                }
-            }
-        }
-    }*/
-
     if(!process){
         _operationArray.push(new Operation(floorIndex,status));
         console.log("push"+floorIndex+"   status"+status);
@@ -341,10 +276,12 @@ function processSequence() {
         if(_elevatorArray[i]._Cstatus != _elevatorArray[i]._Tstatus || _elevatorArray[i]._CanOpen){
             continue;
         }
+        // If current elevator is free
         if(_elevatorArray[i]._Tstatus == STATUS_FREE){
             let minD = 100;
             let chooseIndex = -1;
             console.log(length);
+            //search for the nearest operation
             for(let j = 0;j <length;j++){
                 let len = computeDistance(tempArray[j]._Floor,_elevatorArray[i]._CFloor);
                 console.log(tempArray[j]._status);
@@ -362,6 +299,7 @@ function processSequence() {
                 return;
             }
         }else{
+            //search for the operator which can be added to this elevator
             for(let j = 0;j < length;){
                 if((tempArray[j]._status == _elevatorArray[i]._Tstatus)){
                     let floor = tempArray[j]._Floor;
@@ -461,11 +399,7 @@ function arriveAnimate(n,CFloor,t_status,sign) {
 }
 
 function run(n) {
-
-
-
     if(_running[n] == RUNNING_ON){
-
         let c_status = _elevatorArray[n]._Cstatus;
         let t_status = _elevatorArray[n]._Tstatus;
         let TFloor = _elevatorArray[n]._TFloor;

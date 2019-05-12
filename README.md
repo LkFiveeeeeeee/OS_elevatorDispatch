@@ -1,331 +1,436 @@
-# 电梯调度 
-[TOC]
+# OS-电梯调度
 
-## 一、 项目目的
-- 学习调度算法
-- 通过实现电梯调度，体会操作系统调度过程
-- 学习特定环境下多线程编程方法
-
-## 二、开发工具
-- 开发环境：Chrome + Subline Text
-- 开发语言：JavaScript
-
-## 三、术语表
-
-| 术语       | 解释                                                         |
-| ---------- | ------------------------------------------------------------ |
-| 呼梯信号   | 调度请求                                                     |
-| 并联控制   | 共用一套呼梯信号系统，把两台或多台规格相同的电梯并联起来控制 |
-| 内呼梯按钮 | 电梯内部发出呼梯信号的按钮，只对单部电梯有效                 |
-| 外呼梯按钮 | 电梯外部发出呼梯信号的按钮，对所有并联控制的电梯有效         |
+**姓名** 刘客 **学号** 1651573
 
 
 
-## 四、项目方案
-### 1. 调度算法
-#### (1) 内调度：LOOK算法
-- 原理：
-> LOOK算法是扫描算法的一种改进。扫描算法(SCAN)是一种按照楼层顺序依次服务请求的算法，它让电梯在最底层和最顶层之间连续往返运行，在运行过程中响应处在于电梯运行方向相同的各楼层上的请求。扫描算法较好地解决了电梯移动的问题，在这个算法中，每个电梯响应乘客请求使乘客获得服务的次序是由其发出请求的乘客的位置与当前电梯位置之间的距离来决定的，所有的与电梯运行方向相同的乘客的请求在一次电梯向上运行或向下运行的过程中完成，免去了电梯频繁的来回移动
+## 一、系统概述
+### 1.1需求分析
+运用操作系统进程管理的知识，结合操作系统调度算法，模拟电梯调度的功能。本电梯模拟系统有5个电梯，共20层楼。每个电梯在每一层有一个操作面板，往上和往下按钮以及显示当前楼层。每次按下按钮，五部电梯同时响应，将执行调度算法，选择最优电梯进行调度，调度过程可变，总是选择最优电梯进行调度，尽可能模拟真实电梯情况。
 
-> 对LOOK算法而言，电梯同样在最底层和最顶层之间运行。但当LOOK算法发现电梯所移动的方向上不再有请求时立即改变运行方向，而扫描算法则需要移动到最底层或者最顶层时才改变运行方向。
+### 1.2开发语言
+使用**javascript**语言，使用**原生html+css**做界面展示，使用**jquery**来进行点击交互设计
+建议页面缩放比例为**100%**，这样页面能够得到很好地展示，否则会出现图标错位等情况
 
-- 实现：
-    - 设置一个数组`queue`用来存放所有呼梯层
-    - 每一层在`queue`中最多只允许重复出现3次，分别对应：内部呼梯信号、外部向上的呼梯信号以及外部向下的呼梯信号；为此，建立三个数组`inside`、`outsideUp`、`outsideDown`，三个数组的下标为楼层数，值表示是否是该种呼梯信号，1为是，空或者0为否。如：某人在10楼外部按了向上的按钮，即`outsideUp[10] = 1;`
-    - 电梯的状态——是否运行中、运行方向，分别存放在变量`running`和`goingUp`中
-    - 电梯每运行到一层，判断该层是否在`queue`中，如果在，再判断它的胡梯信号是否和运行方向一致或者是该方向中的最后一层，若是，打开电梯门，更新电梯状态，若不是，电梯保持运动方向运动，更新显示器数字。
+### 1.3系统简述
+#### 1.3.1功能简述
+共5个电梯，20层楼，每个电梯在每层楼有两个按钮，表示往上和往下请求，显示当前楼层的面板。电梯内部有一个控制面板，用户进入后可以选择楼层。另设开门关门键，提供手动电梯开关门操作。在到达指定楼层时，电梯会自动执行开关门操作。
+#### 1.3.2 电梯实现
 
-    |     变量      |             作用             |     值      | 多部电梯时的变体(电梯数ELE_COUNT) |
-    | :-----------: | :--------------------------: | :---------: | :-------------------------------: |
-    |    queue[]    |        存放所有呼梯层        |  呼梯层号   |        queue\[ELE_COUNT][]        |
-    |   inside[]    |    判断是否是内部呼梯信号    |  1或0或空   |   inside\[ELE_COUNT][MAX_FLOOR]   |
-    |  outsideUp[]  | 判断是否是外部向上的呼梯信号 |  1或0或空   | outsideUp\[ELE_COUNT][MAX_FLOOR]  |
-    | outsideDown[] | 判断是否是外部向下的呼梯信号 |  1或0或空   | outsideDown[ELE_COUNT[MAX_FLOOR]  |
-    | currentFloor  |     电梯当前运动到的楼层     |   楼层号    |      currentFLoor[ELE_COUNT]      |
-    |    running    |   判断电梯是否处于运动状态   | true或false |        running[ELE_COUNT]         |
-    |    goingUp    |  判断电梯运动方向是否为向上  | true或false |        goningUp[ELE_COUNT]        |
-    |     timer     |     每隔1s执行一次主函数     |     无      |         timer[ELE_COUNT]          |
+由于javascript是**单线程语言**，所以使用**setInterval**来设立定时函数,模拟多线程实现
+本电梯系统除了主线程之外，还模拟了6个线程
+主线程主要用来处理点击操作，和页面动态变化。剩下6个线程中，5个用来模拟电梯操作，最后一个用来调度分配任务(用来处理外部调度)。
+
+#### 1.3.3 调度算法简述
++ 内部调度
+  + 当用户选定楼层与电梯运行方向处于一致时
+  将该按钮高亮并将该楼层加入该电梯的经停列表里，当到达该楼层时，电梯会执行停留操作。
+  + 当用户选定楼层与电梯运行方向不一致时
+  为了便捷操作，默认该按钮不可选定。即使点击也不会触发高亮操作。
+
++ 外部调度
+
+  当用户点击外部楼层按键时，该按键高亮，同时将该指令加入指令序列。当指令序列不为空时，调度线程即会将该指令寻找合适的电梯进行分配。该处理过程按入指令序列的顺序进行处理，但有一定的分配规则用来规避“先到先服务”带来的资源损失。
+
+  分配优先级(分配规则)
+
+    >  ​    **>if** 
+
+    >  ​    	**>1**  恰好有停留在该层的电梯
+
+    >  ​        **>2**  有与该请求同向的电梯，且双方楼层间隔小于5
+
+    >  ​    **>else**  该操作遗留到下次进行处理
+
+  具体实现后面会结合代码进行讲述
 
 
-![insideScheduling](https://github.com/ChenCyl/Markdown-Photos/blob/master/insideScheduling.png?raw=true)
+## 二、代码设计
+
+### 2.1 类和变量
+
+##### Elevator类
+
+运行调度的主体
+
+> \_Cstatus与\_ Tstatus解释
+> e.p. 用户想从18楼下去，但所有的电梯均位于18楼以下，此时电梯需要先上再下，\_Cstatus就是上，而\_Tstatus是下
+
+> \_SLayer元素的添加
+> 每次向\_SLayer添加楼层时，总会对其进行一次排序操作。确保从前往后是电梯运行方向上依次到达的楼层。
+
+> \_TFloor转换
+> 当用户\_Cstatus与\_Tstatus不同时，此时\_TFloor为电梯要到达的楼层，按上面的例子即是18楼。当电梯到达18楼时，\_TFloor将被转换成 \_SLayer的尾元素
+
+| 变量         | 含义                                  |
+| ----------------- | ------------------------------------- |
+| \_Cstatus          | 当前电梯的运行状态                     |
+| \_Tstatus   |   调度操作实际要求的电梯的运行状态   |
+| \_CFloorl | 当前的floor                      |
+| \_SLayer  | (set类型) 电梯将要进行停滞的楼层|
+| \_TFloor     | 调度操作实际要求的floor         |
+| \_CanOpen    | 是否可以开门  |
+| \_Interupt | 是否阻断了自动开关门操作|
 
 
-#### (2) 外调度：优先级调度算法
-- 原理：将到呼梯层时间最短的电梯优先级设为最高，优先执行，即只将该呼梯层加入到时间最短的电梯queue中。
-- 实现：
-    - `运行经过楼层 = 停顿楼层 + 非停顿楼层` 
-    - `运行时间 = 停顿楼层 * 停顿时间 + 非停顿楼层 * 电梯经过一层的时间`
 
-### 2. 程序界面
-- 初始界面
+##### Operation类
 
-![init](https://github.com/ChenCyl/Markdown-Photos/blob/master/init.png?raw=true)
+指令类
+
+| 变量         | 含义                                  |
+| ----------------- | ------------------------------------- |
+| \_Floor          | 请求电梯到来的楼层                     |
+| \_status   |   上行还是下行   |
+
+##### 全局元素
++ 全局常量
+    | 变量         | 含义                                  |
+    | ----------------- | ------------------------------------- |
+    | INTERVAL          | 执行调度优先级分配(2)的间隔选择,当前选定为5                    |
+    | STATUS_FREE   |   电梯状态----空闲状态   |
+    | STATUS_UP | 电梯状态----上行状态                  |
+    | STATUS_DOWN  | 电梯状态----下行状态|
+    | RUNNING_ON     | 该电梯被调度       |
+    | RUNNING_OFF    | 该电梯未被调度  |
+
++ 全局变量
+	| 变量         | 含义                                  |
+  | ----------------- | ------------------------------------- |
+  | \_minFloor          | 最低楼层                     |
+  | \_maxFloor   |   最高楼层   |
+  | \_elevatorNum | 电梯数量                      |
+  | \_timer  | 定时器数组，用来存储模拟电梯线程的定时器|
+  | \_running     | 用来判断当前电梯是否已经被调度         |
+  | \_elevatorArray    | 电梯数组，用来存储每个电梯实例  |
+  | \_operationArray | 用来存储进入的操作实例|
+
+### 2.2 函数列表
+> jquery 点击事件此处不予赘述，可去elevator-dispath.js详细查看。
+
+| 函数名称        | 作用                         |
+| ----------------- | ------------------------------------- |
+| init()         | 初始化电梯数组，并设立定时器                    |
+| sortDesc(x,y)   |   降序排列   |
+| sortAesc(x,y) | 升序排列                      |
+| openDoor(n,sign=false)  | 模拟开门动画，并且如果该操作打断了正常的定时器逻辑，则重新设立逻辑|
+| closeDoor(n,sign=false)   | 模拟关门动画，并且如果该操作打断了正常的定时器逻辑，则重新设立逻辑      |
+| selectElevator(floorIndex,isUp)    | 选择电梯 |
+| computeDistance(floor,CFloor) | 计算发出请求楼层和电梯当前楼层的距离的绝对值|
+| addLayerToUp(n,floorIndex,sign=false)   | 将楼层添加到某个上行电梯  |
+| addLayerToDown(n,floorIndex,sign=false) | 将楼层添加到某个下行电梯|
+| checkExist(floorIndex,status)  | 检测某个指令是否已经存在  |
+| initTimer(n)  | 初始化定时器|
+| clearTimer(n)   | 清除某个定时器  |
+| pushSequence(floorIndex,status)| 将命令加入指令序列|
+| processSequence()    | 模拟的处理指令序列线程函数，处理指令序列 |
+| arriveOperation(n,CFloor,sign=false)  | 电梯到达某个停滞楼层后执行的操作|
+| arriveAnimate(n,CFloor,t_status,sign) | 电梯到达某个楼层后自动执行动画，并更改一些数据|
+| run(n) | 模拟的电梯运行线程函数，模拟整体电梯运行|
+| moveUP(n) | 上行动画和数据更改|
+| moveDOWN(n) | 下行动画和数据更改|
+|removeLight(n) | 清除掉电梯数字显示板箭头灯光|
+|removeOutsideLight(n,floorIndex,status) | 清除外部控制板上某楼层的上行或者下行按钮的高亮|
+|deleteOperationArray(index) | 删除某一指令|
+|turnLight(n,status)| 更改上行/下行灯光方向|
 
 
-- 运动界面
+### 2.2 电梯运行逻辑
+#### 2.2.1  内部调度指令
 
-![run](https://github.com/ChenCyl/Markdown-Photos/blob/master/run.png?raw=true)
+当点击电梯内部控制板按钮时，会判断电梯状态。如果该按钮和电梯运行冲突，则无效。若不冲突，则添加到电梯停滞楼层序列，并高亮。如果电梯此时是空闲状态，则会对电梯参数进行一些设置。
 
-### 3. 具体实现
-- 主要函数说明
-
-|      函数      |                       功能                       |                  参数                   | 返回值 |
-| :------------: | :----------------------------------------------: | :-------------------------------------: | :----: |
-| dial(n, floor) |         将呼梯层加入到第n部电梯的queue中         | n: 电梯标号（从0开始）; floor: 呼梯层号 |   无   |
-|     run(n)     | 检测当前运动到的楼层需不需要停，并作出相应的反应 |               n: 电梯标号               |   无   |
-| updateState(n) |         更新电梯状态：是否运行、运行方向         |               n: 电梯标号               |   无   |
-
-- 辅助函数说明
-
-|           函数            |                             功能                             |               参数               |       返回值        |
-| :-----------------------: | :----------------------------------------------------------: | :------------------------------: | :-----------------: |
-|          init()           |                        初始化所有变量                        |                无                |         无          |
-|        openDoor(n)        |                   电梯停下后自动开启电梯门                   |           n: 电梯标号            |         无          |
-|       closeDoor(n)        |                          关闭电梯门                          |           n: 电梯标号            |         无          |
-|    openDoorByButton(n)    |                   电梯停下时手动开启电梯门                   |           n: 电梯标号            |         无          |
-|    updateFloorInfo(n)     | 更新楼层信息，包括：门的上下移动效果、显示屏的数字和上下状态灯的变化 |           n: 电梯标号            |         无          |
-|     getMaxInQueue(n)      |                   找出queue中的最大楼层数                    |           n: 电梯标号            |      最大楼层       |
-|     getMinInQueue(n)      |                   找出queue中的最小楼层数                    |           n: 电梯标号            |     最小楼层数      |
-| removeFromQueue(n, floor) |                      从queue中移除楼层                       | n: 电梯标号; floor: 被移除的楼层 |         无          |
-|   betweenCount(a, b, n)   |               计算两个楼层间的需要停下的楼层数               | a、b: 楼层区间端点; n: 电梯标号  | [a,b]区间内的楼层数 |
-
-- 具体代码
-
-    - 外调度
-    ```js
-    // 点击事件的函数功能：将外部按钮的dial加入到其中一台电梯中
-    // 算法：加入到离呼层最短时间的电梯中
-    $(".goup").click(function(){
-        var this_id = $(this).parent()[0].id; //只有通过id访问是一个元素，通过标签和class访问的是一个数组（元素列表）
-        var pressedFloor = Number(this_id.substr(5)); //从下标为5的位置开始取
-        if (isNaN(pressedFloor)) {
-            ;
+```javascript
+$(".dial .button").click(function () {
+    let elevatorIndex = $(this).parent()[0].id;
+    elevatorIndex = parseInt(elevatorIndex.substr(7));
+    let floorIndex = $(this)[0].textContent;
+    floorIndex = parseInt(floorIndex);
+    let judge = false;
+    if(_elevatorArray[elevatorIndex]._Tstatus == STATUS_FREE){
+        judge = true;
+    }
+    if(_elevatorArray[elevatorIndex]._Cstatus != _elevatorArray[elevatorIndex]._Tstatus){
+        return;
+    }
+    if(floorIndex > _elevatorArray[elevatorIndex]._CFloor && _elevatorArray[elevatorIndex]._Tstatus != STATUS_DOWN){
+        $(this).addClass("pressed");
+        addLayerToUp(elevatorIndex,floorIndex,judge);
+        if(_elevatorArray[elevatorIndex]._Tstatus == STATUS_FREE){
+            _elevatorArray[elevatorIndex]._Tstatus = _elevatorArray[elevatorIndex]._Cstatus = STATUS_UP;
         }
-        else {
-            var minDistance = 2 * (MAX_FLOOR - MIN_FLOOR); // 可能出现的最大步数
-            var distance = 0;
-            var elevatorToPush = 0;
-            // 希望在最短时间内达到呼层
-            // 计算到呼层的步数（1s/步）+5s*当中停下的楼层：
-            // if没有运动 else：
-            // if当前层在呼层的下面或当前层
-            //      电梯向上运动 
-            //      电梯向下运动
-            // else当前层在呼层的上面
-            //      电梯向上运动
-            //      电梯向下运动
-            for (var i = 0; i < ELE_COUNT; i++) {
-                if (!running[i]) {
-                    distance = Math.abs(pressedFloor - currentFloor[i]);
-                }
-                else {
-                    var minInQueue = getMinInQueue(i);
-                    var maxInQueue = getMaxInQueue(i);
-                    if (currentFloor[i] <= pressedFloor) {
-                        if (goingUp[i]) {
-                            distance = pressedFloor - currentFloor[i] + 5 * betweenCount(pressedFloor, currentFloor[i], i);
-                        }   
-                        else {
-                            distance = currentFloor[i] - minInQueue + pressedFloor - minInQueue + 5 *
-                            betweenCount(minInQueue, pressedFloor, i);
-                        }
-                    }
-                    else {
-                        if (goingUp[i]) {
-                            distance = maxInQueue - currentFloor[i] + maxInQueue - minInQueue +
-                            Math.abs(minInQueue - pressedFloor) + 5 * betweenCount(minDistance, maxInQueue,
-                            i);
-                        }
-                        else {
-                            distance = currentFloor[i] - minInQueue + Math.abs(minInQueue - pressedFloor) + 5
-                            * betweenCount(currentFloor[i], minInQueue, i);
-                        }
-                    }
-                }
-                if (distance < minDistance) {
-                    minDistance = distance;
-                    elevatorToPush = i;
-                }
-            }
-
-            if (outsideUp[elevatorToPush][pressedFloor] != 1) {
-                outsideUp[elevatorToPush][pressedFloor] = 1;
-                dial(elevatorToPush, pressedFloor);
-                $(this).addClass("on"); //改变上下按钮为白色
-            }
+    }else if(floorIndex < _elevatorArray[elevatorIndex]._CFloor && _elevatorArray[elevatorIndex]._Tstatus != STATUS_UP){
+        $(this).addClass("pressed");
+        addLayerToDown(elevatorIndex,floorIndex,judge);
+        if(_elevatorArray[elevatorIndex]._Tstatus == STATUS_FREE){
+            _elevatorArray[elevatorIndex]._Tstatus = _elevatorArray[elevatorIndex]._Cstatus = STATUS_DOWN;
         }
-    });
-        
-    ```
+    }else{
+        return;
+    }
+    if(_running[elevatorIndex] == RUNNING_OFF){
+        _running[elevatorIndex] = RUNNING_ON;
+    }
+});
+```
+#### 2.2.2  外部调度指令
++ 外部请求
 
-    ```js
-    $(".godown").click(function(){
-        var this_id = $(this).parent()[0].id;
-        var pressedFloor = Number(this_id.substr(5));
-        if (isNaN(pressedFloor)) {
-            ;
+  点击会触发事件，此时会高亮按钮并调用 selectElevator函数
+
+  ``` js
+  $(".up").off().on('click',function (e) {
+    e.stopPropagation();
+    let floorIndex = $(this).parent()[0].id.substr(5);
+    if($(this).hasClass('on')){
+        // if it has already dials the button;
+        return;
+    }
+    floorIndex = parseInt(floorIndex);
+    $(this).addClass('on');
+    selectElevator(floorIndex,true);
+    return false;
+  });
+  //click event on outside panel
+  
+  $(".down").off().on("click",function (e) {
+      e.stopPropagation();
+      let floorIndex = $(this).parent()[0].id.substr(5);
+      if($(this).hasClass('on')){
+          return;
+      }
+      floorIndex = parseInt(floorIndex);
+      $(this).addClass('on');
+      selectElevator(floorIndex,false);
+      return false;
+  });
+  ```
+  selectElevator在判断指令状态后会调用pushSequence函数
+  ``` js
+  function selectElevator(floorIndex,isUp) {
+    let status = isUp?STATUS_UP:STATUS_DOWN;
+    pushSequence(floorIndex,status);
+  }
+  ```
+  pushSequence函数在检查该指令是否已经在指令序列中存储后(jquery迷之操作,click会多次触发,off和on混合使用无法解决)，若不存在则将其加入到指令序列中。
+  ``` js
+  function pushSequence(floorIndex,status) {
+    let result = checkExist(floorIndex,status);
+    let process = false;
+    if(result != -1){
+        process = true;
+    }
+  
+    if(!process){
+        _operationArray.push(new Operation(floorIndex,status));
+        console.log("push"+floorIndex+"   status"+status);
+    }
+  }
+  ```
+
+
++ 指令调度
+
+  该函数运行在一个独立的模拟线程中
+  每1s执行一次
+  执行时会进行嵌套循环
+  外循环为电梯
+  内循环为两个同级循环
+  + 第一个内循环
+    第一个内循环在当前电梯处于**空闲状态**时执行，从指令序列中找出与当前电梯距离最近的指令，将该指令分配给当前电梯，并**继续进行第二个内循环**
+  + 第二个内循环
+    第二个内循环用于寻找与当前电梯同向，并且楼层距离小于Interval(设为5)的楼层，若寻找到，则将该楼层添加到当前电梯的\_SLayer里。
+
+  ```js
+  function processSequence() {
+      let tempArray = _operationArray;
+      let length = tempArray.length;
+      if(length <= 0 ){
+          return;
+      }
+      console.log(tempArray.toString());
+      // if elevator is stopping
+      for(let i = 0; i < _elevatorNum;i++){
+          if(length <= 0){
+              return;
+          }
+          if(_elevatorArray[i]._Cstatus != _elevatorArray[i]._Tstatus || _elevatorArray[i]._CanOpen){
+              continue;
+          }
+          if(_elevatorArray[i]._Tstatus == STATUS_FREE){
+              let minD = 100;
+              let chooseIndex = -1;
+              console.log(length);
+              for(let j = 0;j <length;j++){
+                  let len = computeDistance(tempArray[j]._Floor,_elevatorArray[i]._CFloor);
+                  console.log(tempArray[j]._status);
+                  if(len < minD){
+                      minD = len;
+                      chooseIndex = j;
+                  }
+              }
+              moveElevator(i,tempArray[chooseIndex]._Floor,tempArray[chooseIndex]._status == STATUS_UP);
+              console.log("index"+i +"pick" + " "+tempArray[chooseIndex]._Floor + " "+ tempArray[chooseIndex]._status);
+              deleteOperationArray(checkExist(tempArray[chooseIndex]._Floor,tempArray[chooseIndex]._status));
+          //    tempArray.splice(chooseIndex,1);
+              length--;
+              if(length <= 0){
+                  return;
+              }
+          }else{
+              for(let j = 0;j < length;){
+                  if((tempArray[j]._status == _elevatorArray[i]._Tstatus)){
+                      let floor = tempArray[j]._Floor;
+                      if(tempArray[j]._status == STATUS_UP && floor > _elevatorArray[i]._CFloor
+                          && computeDistance(floor,_elevatorArray[i]._CFloor) < INTERVAL){
+                          addLayerToUp(i,floor);
+                          console.log("index"+i +"pick" + " "+floor+ " "+ tempArray[j]._status);
+                          deleteOperationArray(checkExist(floor,tempArray[j]._status));
+              //            tempArray.splice(j,1);
+                          length--;
+                          continue;
+                      }
+                      if(tempArray[j]._status == STATUS_DOWN && floor < _elevatorArray[i]._CFloor
+                          && computeDistance(floor,_elevatorArray[i]._CFloor)< INTERVAL){
+                          addLayerToDown(i,floor);
+                          console.log("index"+i +"pick" + " "+floor+ " "+ tempArray[j]._status);
+                          deleteOperationArray(checkExist(floor,tempArray[j]._status));
+              //            tempArray.splice(j,1);
+                          length--;
+                          continue;
+                      }
+                  }
+                  j++;
+              }
+          }
+      }
+  }
+  ```
+
+#### 2.2.3  电梯运行
+在每个电梯线程里，都会周期执行run函数
+
+如果电梯的\_SLayer里含有当前楼层，则会进行滞留操作(会判断是否需要转向)
+
+如果没有，则继续进行上行或下行操作。
+
+```js
+function run(n) {
+    if(_running[n] == RUNNING_ON){
+        let c_status = _elevatorArray[n]._Cstatus;
+        let t_status = _elevatorArray[n]._Tstatus;
+        let TFloor = _elevatorArray[n]._TFloor;
+        let CFloor = _elevatorArray[n]._CFloor;
+        if((CFloor == TFloor) || ((c_status == t_status) &&_elevatorArray[n]._SLayer.has(CFloor))){
+            if(_timer[n]){
+                console.log("clear Timer");
+                clearTimer(n);
+            }
+            if(CFloor == TFloor){
+                if(c_status == t_status){
+                    console.log(  "index =" + n + "arrive "+ TFloor + "and t==c  ");
+                    arriveOperation(n,CFloor)
+                }else{
+                    console.log(  "index ="+ n + "arrive "+ TFloor + "and t!=c  ");
+                    arriveOperation(n,CFloor,true)
+                }
+            }else{
+                console.log("index =" + n +"arrive"+CFloor);
+                arriveOperation(n,CFloor);
+            }
         }
         else{
-            var minDistance = 2 * (MAX_FLOOR - MIN_FLOOR); // 可能出现的最大步数
-            var distance = 0;
-            var elevatorToPush = 0;
-
-            for (var i = 0; i < ELE_COUNT; i++) {
-                if (!running[i]) {
-                    distance = Math.abs(currentFloor[i] - pressedFloor);
-                }
-                else {
-                    var minInQueue = getMinInQueue(i);
-                    var maxInQueue = getMaxInQueue(i);
-                    if (currentFloor[i] >= pressedFloor) {
-                        if (goingUp[i]) {
-                            distance = maxInQueue - currentFloor[i] + maxInQueue - pressedFloor + 5 *
-                            betweenCount(maxInQueue, pressedFloor, i);
-                        }
-                        else {
-                            distance = currentFloor[i] - pressedFloor + 5 * betweenCount(pressedFloor,
-                            currentFloor[i], i);
-                        }
-                    }
-                    else {
-                        if (goingUp[i]) {
-                            distance = maxInQueue - currentFloor[i] + Math.abs(maxInQueue - pressedFloor) + 5
-                            * betweenCount(currentFloor[i], maxInQueue, i);
-                        }
-                        else {
-                            distance = currentFloor[i] - minInQueue + maxInQueue - minInQueue +
-                            Math.abs(maxInQueue - pressedFloor) + 5 * betweenCount(minDistance, maxInQueue,
-                            i);
-                        }
-                    }
-                }
-                if (distance < minDistance) {
-                    minDistance = distance;
-                    elevatorToPush = i;
-                }
-            }
-            
-            if (outsideDown[elevatorToPush][pressedFloor] != 1) {
-                outsideDown[elevatorToPush][pressedFloor] = 1;
-                dial(elevatorToPush, pressedFloor);
-                $(this).addClass("on");
+            if(c_status == STATUS_UP){
+                moveUP(n);
+            }else if(c_status == STATUS_DOWN) {
+                moveDOWN(n);
             }
         }
-    }); 
-    ```
-
-    - 内调度
-
-    ```js
-    // 点击事件函数功能：将内部button的数字加入到该楼层中
-    $(".dial .button").click(function(){
-        var this_class = $(this)[0].className;
-        var parent_id = $(this).parent()[0].id;
-        var pressedFloor = Number(this_class.substr(11));
-        var n = Number(parent_id.substr(7));
-        console.log("按下的楼层数为："+pressedFloor);
-        if (!isNaN(pressedFloor)) {
-            if (inside[n][pressedFloor]!= 1) {
-                inside[n][pressedFloor] = 1;
-                dial(n, pressedFloor);
-                $(this).addClass("pressed");     
-            }
-        }
-    });
-    ```
-
-    - 主要函数
-
-    ```js
-    // 函数功能：检测当前运动到的楼层需不需要停并实现相应功能
-    // 参数：第n部电梯（n从0开始）
-    function run(n) {
-        // if (DEBUG_MODE) {
-        //     console.log("elevator:" + n + " running:"+running[n] + "  goingUp:"+goingUp[n] + "  queue:"+queue[n] + " previousFloor:"+currentFloor[n]);
-        // }
-        
-        if(running[n]) { //已经升到currentFloor的状态
-            NeedToStop[n] = false; 
-            // if elevator is right where it's called
-            if (queue[n].indexOf(currentFloor[n]) > -1) {    
-                if (inside[n][currentFloor[n]] == 1) { 
-                    lightsOff(n, currentFloor[n], INSIDE);
-                    removeFromQueue(n, currentFloor[n]);
-                    inside[n][currentFloor[n]] = 0;
-                    NeedToStop[n] = true;
-                }
-                if (goingUp[n]) { 
-                    if (outsideUp[n][currentFloor[n]] == 1) {
-                        lightsOff(n, currentFloor[n], OUTSIDE_UP);
-                        removeFromQueue(n, currentFloor[n]);
-                        outsideUp[n][currentFloor[n]] = 0;
-                        NeedToStop[n] = true;
-                    }
-                    if (outsideDown[n][currentFloor[n]] == 1 && currentFloor[n] == getMaxInQueue(n)) {
-                        lightsOff(n, currentFloor[n], OUTSIDE_DOWN);
-                        removeFromQueue(n, currentFloor[n]);
-                        outsideDown[n][currentFloor[n]] = 0;
-                        NeedToStop[n] = true;
-                    } 
-                }
-                else {
-                    if (outsideDown[n][currentFloor[n]] == 1) {
-                        lightsOff(n, currentFloor[n], OUTSIDE_DOWN);
-                        removeFromQueue(n, currentFloor[n]);
-                        outsideDown[n][currentFloor[n]] = 0;
-                        NeedToStop[n] = true;
-                    }
-                    if (outsideUp[n][currentFloor[n]] == 1 && currentFloor[n] == getMinInQueue(n)) {
-                        lightsOff(n, currentFloor[n], OUTSIDE_UP);
-                        removeFromQueue(n, currentFloor[n]);
-                        outsideUp[n][currentFloor[n]] = 0;
-                        NeedToStop[n] = true;
-                    }
-                }
-                
-                if (NeedToStop[n]) {
-                    if (timer[n])
-                        clearInterval(timer[n]);
-                        
-                    setTimeout(function(){
-                        openDoor(n);
-                        //4s后关门 3s后设置timer timer为1s（所以关门开门时间都是4s）
-                        setTimeout(function(){
-                            closeDoor(n);
-                            setTimeout(function(){
-                                timer[n] = setInterval("run("+n+")", 1000);
-                            }, 2000);
-                        }, 2000);
-                    }, 1000); 
-                    // NeedToStop[n] = false;        
-                }
-                else {
-                    goingUp[n] ? moveUp(n) : moveDown(n);
-                }
-            }
-            else {
-                goingUp[n] ? moveUp(n) : moveDown(n);
-            }
-            updataStatus(n);
-        }
-        
-        updateFloorInfo(n);
     }
+}
+```
+arriveOperation里主要将当前的楼层删去。sign代表是否会进行转向。
+由于会存在用户主动开关门的操作，所以一些数据逻辑也只能放到arriveAnimate函数中进行更改
+```js
+function arriveOperation(n,CFloor,sign=false) {
+    let t_status = _elevatorArray[n]._Tstatus;
+    _elevatorArray[n]._SLayer.delete(CFloor);
+    console.log("index =" + n + "delete" + CFloor);
+    arriveAnimate(n,CFloor,t_status,sign);
+}
+```
 
-    ```
+arriveAnimate主要使用延时操作setTimeout来完成各种动画的实现以及数据的更改。
+sign代表是否会进行转向。
+如果sign为true，则会进行转向数据设置，更改\_Tstatus 和 \_Cstatus以及\_Tstatus
+这之后还会判断是否\_SLayer为空，如果为空则会转换状态。
+除此之外，也会判断是否受到了人为操作的干扰，比如有人按了开门键，如果有人进行这样操作，则会停止某些操作，而更改到那些按键事件中进行执行。
+``` js
+function arriveAnimate(n,CFloor,t_status,sign) {
+    setTimeout(function () {
+        _elevatorArray[n]._CanOpen = true;
+        openDoor(n);
+        if(sign){
+            t_status = _elevatorArray[n]._Tstatus;
+            _elevatorArray[n]._Cstatus = t_status;
+            // turn direction
+            turnLight(n,_elevatorArray[n]._Tstatus);
+            let stopArray = Array.from(_elevatorArray[n]._SLayer);
+            if(t_status == STATUS_UP){
+                stopArray.sort(sortAesc);
+            }else if(t_status == STATUS_DOWN){
+                stopArray.sort(sortDesc);
+            }
+            if(stopArray.length != 0){
+                _elevatorArray[n]._TFloor = stopArray[stopArray.length-1];
+                console.log("turn index"+n+" TFloor to "+ stopArray[stopArray.length-1])
+            }
+        }
+        setTimeout(function () {
+            closeDoor(n);
+            removeOutsideLight(n,CFloor,t_status);
+            setTimeout(function () {
+                // if the sequence is empty, then the elevator will still in CFloor
+                if(_elevatorArray[n]._SLayer.size == 0){
+                    _elevatorArray[n]._Cstatus = _elevatorArray[n]._Tstatus = STATUS_FREE;
+                    _running[n] = RUNNING_OFF;
+                    console.log("no stop floor so end..");
+                    removeLight(n);
+                }
+                if(!_elevatorArray[n]._Interupt){
+                    _elevatorArray[n]._CanOpen = false;
+                    if(_timer[n] == -1){
+                        _timer[n] = initTimer(n);
+                        console.log("init Timer!!!");
+                    }
+                }
+            },2000);
+        },2000);
+    },2000);
+}
+```
 
-## 五、总结
 
-- 外部的调度还有待完善的地方。在计算上，运行时间和停下时间是接近于真实值的不准确的值，这是我的算法的问题；其次，放在实际生活中，停下的时间并不是单次开门关门时间的累加，而要考虑许多其他原因，比如人流强度。
+## 三、运行效果
+#### 初始界面
 
-- 代码优化不够。代码在某种程度上看起来比较混乱，可读性不高。
+![](.\image\initial.png)
 
-- 整个设计流程反思：一开始应该着眼整体、全局，构思好大体的框架而不是边写代码边构思，后者导致开发效率显著降低。
+#### 运行截图
+
+![](.\image\running.png)
+
+#### 警报
+
+![](.\image\warning.png)
 
 
 
 
 
 
+## 四、分析
 
+通过此次项目，我对进程调度有了更深的理解。在使用javascript模拟线程时，我遇到了很多的问题。一开始调度的处理并非分配了一个额外的线程，导致各个电梯会经常产生资源冲突产生很多bug。其次，手动开关门也给了我很大的困扰。因为代码如果设置的不合理就会多产生很多定时器，导致一个电梯同时被几个线程所操作，产生问题。后来经过细心思考，解决了这些问题。
 
+但目前的代码并不是完美的。虽然前期进行了思考，但由于理解不到位，当时实现的效果并不是很好。后来虽然进行了修改，可以流畅地运行，但由于修改是在前面的代码上进行修改的，导致代码很乱。很多函数并不需要，而很多函数由于各种逻辑上的原因吸收了别的函数的代码显的比较臃肿。因此代码整体比较冗余。
