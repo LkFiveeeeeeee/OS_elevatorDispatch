@@ -1,7 +1,5 @@
 # OS-电梯调度
 
-**姓名** 刘客 **学号** 1651573
-
 
 
 ## 一、系统概述
@@ -416,15 +414,15 @@ function arriveAnimate(n,CFloor,t_status,sign) {
 ## 三、运行效果
 #### 初始界面
 
-![](image\initial.png)
+![](https://github.com/LkFiveeeeeeee/OS_elevatorDispatch/raw/master/image/initial.png)
 
 #### 运行截图
 
-![](image\running.png)
+![](https://github.com/LkFiveeeeeeee/OS_elevatorDispatch/raw/master/image/running.png)
 
-#### 警报
+#### 警报raw
 
-![](image\warning.png)
+![](https://github.com/LkFiveeeeeeee/OS_elevatorDispatch/raw/master/image/warning.png)
 
 
 
